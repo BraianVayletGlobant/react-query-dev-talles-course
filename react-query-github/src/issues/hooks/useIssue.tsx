@@ -8,13 +8,15 @@ interface UseIssueType {
   issueNumber: number;
 }
 
-const getIssue = async (issueNumber: number): Promise<Issue> => {
+export const getIssue = async (issueNumber: number): Promise<Issue> => {
   await sleep(2);
   const { data } = await githubApi.get<Issue>(`/issues/${issueNumber}`);
   return data;
 };
 
-const getIssueComment = async (issueNumber: number): Promise<Issue[]> => {
+export const getIssueComment = async (
+  issueNumber: number
+): Promise<Issue[]> => {
   await sleep(2);
   const { data } = await githubApi.get<Issue[]>(
     `/issues/${issueNumber}/comments`

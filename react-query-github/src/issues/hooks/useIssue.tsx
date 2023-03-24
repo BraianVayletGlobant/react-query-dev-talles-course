@@ -1,13 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { githubApi } from "../../api/githubApi";
 import { Issue } from "../../interfaces";
 import { sleep } from "../../helpers/sleep";
+import { Comments } from "../../interfaces/issue";
 
-interface UseIssueType {
+// types
+interface InputProps {
   issueNumber: number;
 }
 
+interface OutputProps {
+  issueQuery: UseQueryResult<Issue, unknown>;
+  commentsQuery: UseQueryResult<Issue[], unknown>;
+}
+
+// fetcher
 export const getIssue = async (issueNumber: number): Promise<Issue> => {
   await sleep(2);
   const { data } = await githubApi.get<Issue>(`/issues/${issueNumber}`);
@@ -24,7 +32,8 @@ export const getIssueComment = async (
   return data;
 };
 
-export const useIssue = ({ issueNumber }: UseIssueType) => {
+// hook
+export const useIssue = ({ issueNumber }: InputProps): OutputProps => {
   const issueQuery = useQuery(["issue", issueNumber], () =>
     getIssue(issueNumber)
   );

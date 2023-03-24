@@ -1,14 +1,14 @@
 import { githubApi } from "../../api/githubApi";
-import { useQuery } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { Label } from "../../interfaces";
 import { sleep } from "../../helpers/sleep";
 
-const getLabels = async (): Promise<Label[]> => {
-  await sleep(2000);
-  const { data } = await githubApi.get<Label[]>("/labels");
-  return data;
-};
+// types
+interface OutputProps {
+  labelsQuery: UseQueryResult<Label[], unknown>;
+}
 
+// initial data
 const initialData: Label[] = [
   {
     id: 717031390,
@@ -30,7 +30,15 @@ const initialData: Label[] = [
   },
 ];
 
-export const useLabels = () => {
+// fetcher
+const getLabels = async (): Promise<Label[]> => {
+  await sleep(2000);
+  const { data } = await githubApi.get<Label[]>("/labels?per_page=100");
+  return data;
+};
+
+// hook
+export const useLabels = (): OutputProps => {
   const labelsQuery = useQuery(["labels"], getLabels, {
     // Tiempo de espera para que se vuelva a hacer la petición
     staleTime: 1000 * 60 * 60,

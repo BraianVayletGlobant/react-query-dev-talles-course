@@ -4,6 +4,7 @@ import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { getIssue, getIssueComment } from "../hooks/useIssue";
+import { timeSince } from "../../helpers";
 
 interface IssueItemProps {
   issue: Issue;
@@ -57,9 +58,23 @@ export const IssueItem: FC<IssueItemProps> = ({ issue }) => {
         <div className="d-flex flex-column flex-fill px-2">
           <span>{issue.title}</span>
           <span className="issue-subinfo">
-            #{issue.number} opened 2 days ago by{" "}
+            #{issue.number} opened {timeSince(issue.created_at)} ago by{" "}
             <span className="fw-bold">{issue.user.login}</span>
           </span>
+          <div>
+            {issue.labels.map((label) => (
+              <span
+                key={label.id}
+                className="badge rounded-pill m-1"
+                style={{
+                  color: "white",
+                  backgroundColor: `#${label.color}`,
+                }}
+              >
+                {label.name}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="d-flex align-items-center">

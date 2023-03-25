@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { IssueList } from "../components/IssueList";
 import { LabelPicker } from "../components/LabelPicker";
-import { useIssues } from "../hooks";
+import { useIssuesInfinite } from "../hooks";
 import { State } from "../../interfaces";
 import LoadingIcon from "../../share/components/LoadingIcon";
 
-export const ListView = () => {
+export const ListViewInfinite = () => {
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [state, setState] = useState<State>();
 
-  const { issuesQuery, page, nextPage, prevPage } = useIssues({
-    state,
-    labels: selectedLabels,
-  });
+  const { issuesQuery } = useIssuesInfinite({ state, labels: selectedLabels });
 
   const onLabelChanged = (labelName: string) => {
     selectedLabels.includes(labelName)
       ? setSelectedLabels(selectedLabels.filter((label) => label !== labelName))
       : setSelectedLabels([...selectedLabels, labelName]);
   };
+
+  console.log("issuesQuery.data", issuesQuery.data);
+  console.log("issuesQuery.data?.pages.flat()", issuesQuery.data?.pages.flat());
 
   return (
     <div className="row mt-5">
@@ -27,31 +27,19 @@ export const ListView = () => {
           <LoadingIcon />
         ) : (
           <IssueList
-            issues={issuesQuery.data || []}
+            issues={issuesQuery.data?.pages.flat() || []}
             state={state}
             onStateChange={(newState?: State) => setState(newState)}
           />
         )}
 
-        <div className="d-flex mt-2 justify-content-between align-items-center">
-          <button
-            className="btn btn-outline-primary"
-            disabled={issuesQuery.isFetching}
-            onClick={prevPage}
-          >
-            Prev
-          </button>
-
-          <span>{page}</span>
-
-          <button
-            className="btn btn-outline-primary"
-            disabled={issuesQuery.isFetching}
-            onClick={nextPage}
-          >
-            Next
-          </button>
-        </div>
+        <button
+          className="btn btn-outline-primary mt-2"
+          disabled={!issuesQuery.hasNextPage}
+          onClick={() => issuesQuery.fetchNextPage()}
+        >
+          Load More...
+        </button>
       </div>
 
       <div className="col-4">

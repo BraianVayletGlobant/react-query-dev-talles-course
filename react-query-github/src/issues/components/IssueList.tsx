@@ -8,27 +8,17 @@ interface IssueListProps {
   issues: Issue[];
   state?: State;
   onStateChange: (state?: State) => void;
-  paginationMethod: PaginationMethodsProps;
-  onPaginationMethodChange: (
-    newPaginationMethod: PaginationMethodsProps
-  ) => void;
 }
 
 export const IssueList: FC<IssueListProps> = ({
   issues,
   state,
   onStateChange,
-  paginationMethod,
-  onPaginationMethodChange,
 }) => {
   const handleActiveClass = {
     All: state === undefined ? "active" : "",
     Open: state === State.Open ? "active" : "",
     Closed: state === State.Close ? "active" : "",
-    PgMethodInfinite:
-      paginationMethod === PAGINATION_METHODS.INFINITE ? "active" : "",
-    PgMethodButtons:
-      paginationMethod === PAGINATION_METHODS.BUTTONS ? "active" : "",
   };
 
   return (
@@ -57,29 +47,6 @@ export const IssueList: FC<IssueListProps> = ({
               className={`nav-link ${handleActiveClass.Closed}`}
             >
               Closed
-            </a>
-          </li>
-          <li className="nav-item">
-            <span className="nav-link"> | </span>
-          </li>
-          <li className="nav-item">
-            <a
-              onClick={() =>
-                onPaginationMethodChange(PAGINATION_METHODS.INFINITE)
-              }
-              className={`nav-link ${handleActiveClass.PgMethodInfinite}`}
-            >
-              {PAGINATION_METHODS.INFINITE.toUpperCase()}
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              onClick={() =>
-                onPaginationMethodChange(PAGINATION_METHODS.BUTTONS)
-              }
-              className={`nav-link ${handleActiveClass.PgMethodButtons}`}
-            >
-              {PAGINATION_METHODS.BUTTONS.toUpperCase()}
             </a>
           </li>
         </ul>
